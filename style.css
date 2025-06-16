@@ -66,6 +66,12 @@ img {
   text-transform: capitalize;
   text-decoration: none;
   letter-spacing: 1px;
+  transition: background 0.3s, color 0.3s, transform 0.2s;
+}
+
+.btn:hover, .btn-1:hover, .btn-2:hover {
+  transform: scale(1.07) translateY(-2px);
+  box-shadow: 0 4px 16px rgba(229,148,0,0.15);
 }
 
 /* Header  */
@@ -347,7 +353,8 @@ video{
 }
 
 .card:hover {
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2), 0 -5px 10px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 8px 24px rgba(13,110,139,0.15);
 }
 
 .card .chef-name {
@@ -414,6 +421,7 @@ video{
   border-radius: 3px;
   border: none;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s, border 0.3s;
 }
 
 .contact-form .form-group textarea {
@@ -424,6 +432,8 @@ video{
 .contact-form .form-group input:focus,
 .contact-form .form-group textarea:focus {
   outline: none;
+  box-shadow: 0 0 0 2px var(--primary-color);
+  border: 1px solid var(--primary-color);
 }
 
 .footer {
@@ -465,4 +475,25 @@ video{
   .contact-form form {
     width: 100%;
   }
+}
+
+/* Popup fade-in animation */
+#popup {
+  animation: fadeIn 0.4s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Animate section fade-in on scroll */
+section {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s, transform 0.7s;
+}
+section.visible {
+  opacity: 1;
+  transform: none;
 }

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Burgers</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .order-container { max-width: 900px; margin: 40px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 16px #0001; padding: 30px; }
+    .products, .cart { margin-bottom: 30px; }
+    .product, .cart-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #eee; }
+    .product:last-child, .cart-item:last-child { border-bottom: none; }
+    .product img { width: 80px; border-radius: 8px; margin-right: 20px; }
+    .product-info { flex: 1; }
+    .cart-total { font-weight: bold; font-size: 18px; text-align: right; margin-top: 10px; }
+    .pay-form { background: var(--secondary-color); padding: 20px; border-radius: 8px; }
+    .pay-form label { display: block; margin-bottom: 5px; }
+    .pay-form input { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid #ccc; }
+    .pay-form button { width: 100%; }
+    .cart-empty { color: #888; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="order-container">
+    <h1>Order Burgers</h1>
+    <div class="products">
+      <h2>Menu</h2>
+      <div class="product" data-name="Classic Burger" data-price="3.85">
+        <img src="burger-2.png" alt="Classic Burger">
+        <div class="product-info">
+          <div><strong>Classic Burger</strong></div>
+          <div>$3.85</div>
+        </div>
+        <button class="btn btn-1 add-to-cart">Add to Cart</button>
+      </div>
+      <div class="product" data-name="Cheese Burger" data-price="3.95">
+        <img src="burger-3.png" alt="Cheese Burger">
+        <div class="product-info">
+          <div><strong>Cheese Burger</strong></div>
+          <div>$3.95</div>
+        </div>
+        <button class="btn btn-1 add-to-cart">Add to Cart</button>
+      </div>
+      <div class="product" data-name="Veggie Burger" data-price="4.85">
+        <img src="burger-5.png" alt="Veggie Burger">
+        <div class="product-info">
+          <div><strong>Veggie Burger</strong></div>
+          <div>$4.85</div>
+        </div>
+        <button class="btn btn-1 add-to-cart">Add to Cart</button>
+      </div>
+      <div class="product" data-name="Special Burger" data-price="6.85">
+        <img src="burger-7.png" alt="Special Burger">
+        <div class="product-info">
+          <div><strong>Special Burger</strong></div>
+          <div>$6.85</div>
+        </div>
+        <button class="btn btn-1 add-to-cart">Add to Cart</button>
+      </div>
+    </div>
+    <div class="cart">
+      <h2>Your Cart</h2>
+      <div id="cart-items"></div>
+      <div class="cart-total" id="cart-total"></div>
+    </div>
+    <form class="pay-form" id="pay-form">
+      <h2>Payment Details</h2>
+      <label for="name">Name on Card</label>
+      <input type="text" id="name" required>
+      <label for="card">Card Number</label>
+      <input type="text" id="card" maxlength="19" required pattern="[0-9 ]{16,19}">
+      <label for="exp">Expiry Date</label>
+      <input type="text" id="exp" placeholder="MM/YY" required pattern="\d{2}/\d{2}">
+      <label for="cvv">CVV</label>
+      <input type="text" id="cvv" maxlength="4" required pattern="\d{3,4}">
+      <button class="btn btn-1" type="submit">Pay & Place Order</button>
+    </form>
+    <div id="order-success" style="display:none;text-align:center;margin-top:20px;font-size:20px;color:green;">Thank you! Your order has been placed.</div>
+  </div>
+  <script>
+    // Cart logic
+    const cart = [];
+    function updateCart() {
+      const cartItems = document.getElementById('cart-items');
+      const cartTotal = document.getElementById('cart-total');
+      cartItems.innerHTML = '';
+      let total = 0;
+      if (cart.length === 0) {
+        cartItems.innerHTML = '<div class="cart-empty">Your cart is empty.</div>';
+        cartTotal.textContent = '';
+        return;
+      }
+      cart.forEach((item, i) => {
+        total += item.price * item.qty;
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `<span>${item.name} x${item.qty}</span><span>$${(item.price * item.qty).toFixed(2)}</span><button class='btn btn-2' onclick='removeCartItem(${i})'>Remove</button>`;
+        cartItems.appendChild(div);
+      });
+      cartTotal.textContent = 'Total: $' + total.toFixed(2);
+    }
+    function removeCartItem(i) {
+      cart.splice(i, 1);
+      updateCart();
+    }
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const prod = this.closest('.product');
+        const name = prod.getAttribute('data-name');
+        const price = parseFloat(prod.getAttribute('data-price'));
+        const found = cart.find(item => item.name === name);
+        if (found) { found.qty++; } else { cart.push({ name, price, qty: 1 }); }
+        updateCart();
+      });
+    });
+    // Payment form
+    document.getElementById('pay-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (cart.length === 0) {
+        alert('Please add at least one item to your cart.');
+        return;
+      }
+      document.getElementById('order-success').style.display = 'block';
+      cart.length = 0;
+      updateCart();
+      this.reset();
+      setTimeout(()=>{
+        document.getElementById('order-success').style.display = 'none';
+      }, 4000);
+    });
+    updateCart();
+  </script>
+</body>
+</html>
